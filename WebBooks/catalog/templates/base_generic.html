@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/
+    jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/
+    js/bootstrap.min.js"></script>
+    {% block title %}<title>Мир книг</title>{% endblock title %}
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    {% block head %}
+    <div class="conteiner">
+        <div class="row">
+            <div class="col-sm-2">
+                <img src="{% static 'images/logotip.jpg' %}"
+                style="width:160px; height:100px;" align = "absmiddle">
+                
+            </div>
+            <div class="col-sm-10">
+                <h1>Сайт "Мир книг"</h1>
+
+            </div>
+        </div>
+    </div>
+    
+    {% endblock head %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                {% block sidebar %}
+                <ul class="sidebar-nav">
+                    <li><a href="{% url 'index' %}">Главная страница</a></li>
+                    <li><a href="{% url 'books' %}">Все книги</a></li>
+                    <li><a href="{% url 'authors' %}">Все авторы</a></li>
+                    <li><a href="{% url 'authors_add' %}">Редактировать авторов</a></li>
+                    {% if user.is_authenticated %}
+                    <li>Пользователь: {{ user.get_username }}</li>
+                    <li><a href="{% url 'my-borrowed' %}">Мои заказы</a></li>
+                    <li><a href="{% url 'logout' %}?next={{request.path}}">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}?next={{request.path}}">Login</a></li>
+                    {% endif %}
+                </ul>
+                {% endblock sidebar %}
+            </div>
+            <div class="col-sm-8">
+                {% block content %}{% endblock content %}
+                {% block pagination %}
+                {% if is_paginated %}
+                <div class="pagination">
+                    <span class="page-links">
+                        {% if page_obj.has_previous %}
+                        <a href="{{ request.path }}?page={{page_obj.previous_page_number}}">
+                            Предыдущая</a>
+                        {% endif %}
+                        <span class="page-current">
+                            Страница  {{page_obj.number}} из {{page_obj.paginator.num_pages}}.
+
+                        </span>
+                        {% if page_obj.has_next %}
+                        <a href="{{request.path}}?page={{page_obj.next_page_number}}">Следующая</a>
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+                {% endblock pagination %}
+
+                {% block footer %}
+                {% block copyright %}
+                <p>Copyright ООО "Люди и книги", 2020. Все права защищены</p>
+                {% endblock copyright %}
+                {% endblock footer %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
